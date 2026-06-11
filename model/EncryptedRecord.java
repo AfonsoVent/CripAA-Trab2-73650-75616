@@ -10,6 +10,7 @@ public class EncryptedRecord {
     private String idDet;
     private String nameDet;
     private String deptDet;
+    private String bonusDet;
 
     // For mOPE:
     private long salaryOpe;
@@ -37,6 +38,7 @@ public class EncryptedRecord {
             if (idDet != null) baos.write(idDet.getBytes(StandardCharsets.UTF_8));
             if (nameDet != null) baos.write(nameDet.getBytes(StandardCharsets.UTF_8));
             if (deptDet != null) baos.write(deptDet.getBytes(StandardCharsets.UTF_8));
+            if (bonusDet != null) baos.write(bonusDet.getBytes(StandardCharsets.UTF_8));
             
             // Write OPE values
             baos.write(longToBytes(salaryOpe));
@@ -70,6 +72,7 @@ public class EncryptedRecord {
     public String getIdDet() { return idDet; }
     public String getNameDet() { return nameDet; }
     public String getDeptDet() { return deptDet; }
+    public String getBonusDet() { return bonusDet; }
     public long getSalaryOpe() { return salaryOpe; }
     public long getBirthDateOpe() { return BirthDateOpe; }
     public BigInteger getSalarySum() { return salarySum; }
@@ -83,6 +86,7 @@ public class EncryptedRecord {
     public void setIdDet(String idDet) { this.idDet = idDet; }
     public void setNameDet(String nameDet) { this.nameDet = nameDet; }
     public void setDeptDet(String deptDet) { this.deptDet = deptDet; }
+    public void setBonusDet(String bonusDet) { this.bonusDet = bonusDet; }
     public void setSalaryOpe(long salaryOpe) { this.salaryOpe = salaryOpe; }
     public void setBirthDateOpe(long BirthDateOpe) { this.BirthDateOpe = BirthDateOpe; }
     public void setSalarySum(BigInteger salarySum) { this.salarySum = salarySum; }

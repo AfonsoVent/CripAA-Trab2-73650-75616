@@ -1,6 +1,7 @@
 package bootstrap;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import crypto.AesGcmCipher;
@@ -35,6 +36,10 @@ public class EncryptedRecordBuilder {
         byte[] encDept = DetCipher.encrypt(deptBytes, km.getDetKey(), "DepartmentID");
         record.setDeptDet(Base64.getEncoder().encodeToString(encDept));
         // DET(BonusEligibiity)
+        String bonusValue = emp.getBonusEligible() ? "TRUE" : "FALSE";
+        byte[] bonusBytes = bonusValue.getBytes(StandardCharsets.UTF_8);
+        byte[] encBonus = DetCipher.encrypt(bonusBytes, km.getDetKey(), "BonusEligibiity");
+        record.setBonusDet(Base64.getEncoder().encodeToString(encBonus));
 
         // For mOPE:
         // mOPE(Salary)

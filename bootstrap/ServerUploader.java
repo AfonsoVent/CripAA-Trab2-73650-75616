@@ -27,16 +27,16 @@ public class ServerUploader {
 
         // Insert query
         String insertSQL = "INSERT INTO " + TABLE_NAME + " " +
-                           "(idDet, fullNameDet, deptDet, salaryOpe, birthDateOpe, " +
+                           "(idDet, fullNameDet, deptDet, bonusDet, salaryOpe, birthDateOpe, " +
                            "salarySum, salaryMulC1, salaryMulC2, secureEncBlock, hmac, signature) " +
-                           "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                           "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
             PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
             // Create table if needed
             createTableIfNotExists(conn);
 
-            // Faster batch inserts
+            // For faster batch inserts
             conn.setAutoCommit(false);
 
             for (EncryptedRecord rec : records) {
@@ -44,24 +44,25 @@ public class ServerUploader {
                 pstmt.setString(1, rec.getIdDet());
                 pstmt.setString(2, rec.getNameDet());
                 pstmt.setString(3, rec.getDeptDet());
+                pstmt.setString(4, rec.getBonusDet());
 
                 // mOPE fields
-                pstmt.setLong(4, rec.getSalaryOpe());
-                pstmt.setLong(5, rec.getBirthDateOpe());
+                pstmt.setLong(5, rec.getSalaryOpe());
+                pstmt.setLong(6, rec.getBirthDateOpe());
 
                 // HOM-ADD (Paillier)
-                pstmt.setString(6, rec.getSalarySum() != null ? rec.getSalarySum().toString() : null);
+                pstmt.setString(7, rec.getSalarySum() != null ? rec.getSalarySum().toString() : null);
                 
                 // HOM-MUL (ElGamal)
-                pstmt.setString(7, rec.getSalaryMulC1() != null ? rec.getSalaryMulC1().toString() : null);
-                pstmt.setString(8, rec.getSalaryMulC2() != null ? rec.getSalaryMulC2().toString() : null);
+                pstmt.setString(8, rec.getSalaryMulC1() != null ? rec.getSalaryMulC1().toString() : null);
+                pstmt.setString(9, rec.getSalaryMulC2() != null ? rec.getSalaryMulC2().toString() : null);
                 
                 // Bloco (AES/GCM)
-                pstmt.setString(9, rec.getSecureEncBlock());
+                pstmt.setString(10, rec.getSecureEncBlock());
 
                 // HMAC and signature
-                pstmt.setBytes(10, rec.getHmac());
-                pstmt.setBytes(11, rec.getSignature());
+                pstmt.setBytes(11, rec.getHmac());
+                pstmt.setBytes(12, rec.getSignature());
 
                 // Add to batch
                 pstmt.addBatch();
@@ -88,6 +89,7 @@ public class ServerUploader {
                     "idDet VARCHAR(255), " +
                     "fullNameDet VARCHAR(255), " +
                     "deptDet VARCHAR(255), " +
+                    "bonusDet VARCHAR(255), " +
                     "salaryOpe BIGINT, " +
                     "birthDateOpe BIGINT, " +
                     "salarySum TEXT, " +
