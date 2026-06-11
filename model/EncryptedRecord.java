@@ -13,7 +13,7 @@ public class EncryptedRecord {
 
     // For mOPE:
     private long salaryOpe;
-    private long ageOpe;
+    private long BirthDateOpe;
 
     // For HOM-...
     private BigInteger salarySum; // ...-SUM (Paillier)
@@ -40,7 +40,7 @@ public class EncryptedRecord {
             
             // Write OPE values
             baos.write(longToBytes(salaryOpe));
-            baos.write(longToBytes(ageOpe));
+            baos.write(longToBytes(BirthDateOpe));
             
             // Write homomorphic values
             if (salarySum != null) baos.write(salarySum.toByteArray());
@@ -71,7 +71,7 @@ public class EncryptedRecord {
     public String getNameDet() { return nameDet; }
     public String getDeptDet() { return deptDet; }
     public long getSalaryOpe() { return salaryOpe; }
-    public long getAgeOpe() { return ageOpe; }
+    public long getBirthDateOpe() { return BirthDateOpe; }
     public BigInteger getSalarySum() { return salarySum; }
     public BigInteger getSalaryMulC1() { return salaryMulC1; }
     public BigInteger getSalaryMulC2() { return salaryMulC2; }
@@ -84,7 +84,7 @@ public class EncryptedRecord {
     public void setNameDet(String nameDet) { this.nameDet = nameDet; }
     public void setDeptDet(String deptDet) { this.deptDet = deptDet; }
     public void setSalaryOpe(long salaryOpe) { this.salaryOpe = salaryOpe; }
-    public void setAgeOpe(long ageOpe) { this.ageOpe = ageOpe; }
+    public void setBirthDateOpe(long BirthDateOpe) { this.BirthDateOpe = BirthDateOpe; }
     public void setSalarySum(BigInteger salarySum) { this.salarySum = salarySum; }
     public void setSalaryMulC1(BigInteger salaryMulC1) { this.salaryMulC1 = salaryMulC1; }
     public void setSalaryMulC2(BigInteger salaryMulC2) { this.salaryMulC2 = salaryMulC2; }

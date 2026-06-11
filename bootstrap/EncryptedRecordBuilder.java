@@ -38,8 +38,8 @@ public class EncryptedRecordBuilder {
         // For mOPE:
         // mOPE(Salary)
         record.setSalaryOpe(km.getMOpeSalaryTree().getMetricFor(emp.getSalary()));
-        // mOPE(age)
-        record.setAgeOpe(km.getMOpeAgeTree().getMetricFor(emp.getAge()));
+        // mOPE(DateofBirth)
+        record.setBirthDateOpe(km.getMOpeBirthDateTree().getMetricFor(emp.getBirthDateAsNumeric()));
         
         // For Pailler
         BigInteger salaryBI = BigInteger.valueOf((long) emp.getSalary());

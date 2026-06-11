@@ -27,7 +27,7 @@ public class ServerUploader {
 
         // Insert query
         String insertSQL = "INSERT INTO " + TABLE_NAME + " " +
-                           "(idDet, nameDet, deptDet, salaryOpe, ageOpe, " +
+                           "(idDet, nameDet, deptDet, salaryOpe, birthDateOpe, " +
                            "salarySum, salaryMulC1, salaryMulC2, secureEncBlock, hmac, signature) " +
                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -47,7 +47,7 @@ public class ServerUploader {
 
                 // mOPE fields
                 pstmt.setLong(4, rec.getSalaryOpe());
-                pstmt.setLong(5, rec.getAgeOpe());
+                pstmt.setLong(5, rec.getBirthDateOpe());
 
                 // HOM-ADD (Paillier)
                 pstmt.setString(6, rec.getSalarySum() != null ? rec.getSalarySum().toString() : null);
@@ -89,7 +89,7 @@ public class ServerUploader {
                     "fullNameDet VARCHAR(255), " +
                     "deptDet VARCHAR(255), " +
                     "salaryOpe BIGINT, " +
-                    "ageOpe BIGINT, " +
+                    "birthDateOpe BIGINT, " +
                     "salarySum TEXT, " +
                     "salaryMulC1 TEXT, " +
                     "salaryMulC2 TEXT, " +

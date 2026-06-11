@@ -40,7 +40,7 @@ public class DatasetLoader {
                 emp.setFullName(data[1].trim());
                 emp.setDepartment(data[2].trim());
                 emp.setSalary(Integer.parseInt(data[3].trim()));
-                emp.setAge(Integer.parseInt(data[4].trim()));
+                emp.setbirthDate((data[4].trim()));
 
                 employees.add(emp);
             }

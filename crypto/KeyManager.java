@@ -38,13 +38,13 @@ public class KeyManager implements Serializable {
 
     // Tree mOPE
     private MOpeTree mOpeSalaryTree; // Tree for Salary
-    private MOpeTree mOpeAgeTree; // Tree for Age
+    private MOpeTree mOpeBirthDateTree; // Tree for DateofBirth
 
     public KeyManager() {
         try {
             // Create mOPE trees
             this.mOpeSalaryTree = new MOpeTree();
-            this.mOpeAgeTree = new MOpeTree();
+            this.mOpeBirthDateTree = new MOpeTree();
 
             // Create symmetric keys
             this.detKey = generateSymmetricKey("AES", 256);
@@ -139,5 +139,5 @@ public class KeyManager implements Serializable {
     public BigInteger getElGamalPriv() { return elGamalPriv; }
     public BigInteger getElGamalPub() { return elGamalPub; }
     public MOpeTree getMOpeSalaryTree() { return mOpeSalaryTree; }
-    public MOpeTree getMOpeAgeTree() { return mOpeAgeTree; }
+    public MOpeTree getMOpeBirthDateTree() { return mOpeBirthDateTree; }
 }

@@ -27,9 +27,8 @@ public class Bootstrap {
             // Save the local indice
             ClientIndexStore.save(km, "client-index.bin");
     
-            // TODO: Follow the ideia down
-            // // Sends encrypted records to the server
-            // ServerUploader.upload(records);
+            // Sends encrypted records to the server
+            ServerUploader.upload(records);
     
             // // Debug time
         } catch (Exception e) {

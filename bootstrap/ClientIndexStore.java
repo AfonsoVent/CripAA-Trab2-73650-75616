@@ -41,10 +41,10 @@ public class ClientIndexStore {
             return km;
 
         } catch (IOException e) {
-            throw new RuntimeException("Error, failed to load file: " + e.getMessage());
+            throw new RuntimeException("Error, failed to load file: " + e);
 
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Error, invalid KeyManager class: " + e.getMessage());
+            throw new RuntimeException("Error, invalid KeyManager class: " + e);
         }
     }
 }
