@@ -73,11 +73,11 @@ public class EncryptedRecord {
     public long getSalaryOpe() { return salaryOpe; }
     public long getAgeOpe() { return ageOpe; }
     public BigInteger getSalarySum() { return salarySum; }
-    public BigInteger getsalaryMulC1() { return salaryMulC1; }
-    public BigInteger getsalaryMulC2() { return salaryMulC2; }
+    public BigInteger getSalaryMulC1() { return salaryMulC1; }
+    public BigInteger getSalaryMulC2() { return salaryMulC2; }
     public String getSecureEncBlock() { return secureEncBlock; }
     public byte[] getHmac() { return hmac; }
-    public byte[][] getSignature() { return new byte[][]{signature}; } 
+    public byte[] getSignature() { return signature; } 
 
     // Setters
     public void setIdDet(String idDet) { this.idDet = idDet; }

@@ -24,15 +24,15 @@ public class EncryptedRecordBuilder {
         // For Determinist encryption:
         // DET(EmployeeId)
         byte[] idBytes = String.valueOf(emp.getId()).getBytes();
-        byte[] encId = DetCipher.encrypt(idBytes, km.getDetKey());
+        byte[] encId = DetCipher.encrypt(idBytes, km.getDetKey(), "employeeID");
         record.setIdDet(Base64.getEncoder().encodeToString(encId));
         // DET(FullName)
         byte[] nameBytes = emp.getFullName().getBytes();
-        byte[] encName = DetCipher.encrypt(nameBytes, km.getDetKey());
+        byte[] encName = DetCipher.encrypt(nameBytes, km.getDetKey(), "FullName");
         record.setNameDet(Base64.getEncoder().encodeToString(encName));
-        // DET(Department)
+        // DET(DepartmentID)
         byte[] deptBytes = emp.getDepartment().getBytes();
-        byte[] encDept = DetCipher.encrypt(deptBytes, km.getDetKey());
+        byte[] encDept = DetCipher.encrypt(deptBytes, km.getDetKey(), "DepartmentID");
         record.setDeptDet(Base64.getEncoder().encodeToString(encDept));
         
         // For mOPE:
@@ -41,7 +41,7 @@ public class EncryptedRecordBuilder {
         // mOPE(age)
         record.setAgeOpe(km.getMOpeAgeTree().getMetricFor(emp.getAge()));
         
-        // For Pailler and RSA
+        // For Pailler
         BigInteger salaryBI = BigInteger.valueOf((long) emp.getSalary());
 
         // HOM-ADD(Salary):

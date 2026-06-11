@@ -1,5 +1,6 @@
 package crypto;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -12,7 +13,9 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 // Responsable to create all keys at startup
-public class KeyManager {
+public class KeyManager implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     // Symmetrical Keys
     private SecretKey detKey;   // AES-CTR
     private SecretKey gcmKey;   // AES/GCM
@@ -25,6 +28,7 @@ public class KeyManager {
     // Parameters Paillier HOM-ADD
     private BigInteger paillierN;
     private BigInteger paillierLambda;
+    private BigInteger paillierMu;
 
     // Parameters ElGamal HOM-MUL
     private BigInteger elGamalP; // Big (P)rimal
@@ -83,8 +87,8 @@ public class KeyManager {
 
         this.elGamalP = BigInteger.probablePrime(512, random);
         this.elGamalG = new BigInteger("2");
-        this.elGamalPub = new BigInteger(256, random);
-        this.elGamalPriv = elGamalG.modPow(elGamalPub, elGamalP);
+        this.elGamalPriv = new BigInteger(256, random);
+        this.elGamalPub = elGamalG.modPow(elGamalPriv, elGamalP);
     }
 
     // Create Paillier keys
@@ -97,6 +101,7 @@ public class KeyManager {
 
         // Public key n = p * q
         this.paillierN = p.multiply(q);
+        BigInteger nSquare = this.paillierN.multiply(this.paillierN);
 
         // Compute (p-1)
         BigInteger pMinus1 = p.subtract(BigInteger.ONE);
@@ -107,6 +112,17 @@ public class KeyManager {
         this.paillierLambda =
             pMinus1.multiply(qMinus1)
                 .divide(pMinus1.gcd(qMinus1));
+        
+        // Formula: g^lambda mod n^2
+        // But with: g = n + 1 
+        // New Formula: (1 + lambda * n) mod n^2
+        BigInteger muToLambda = BigInteger.ONE.add(this.paillierLambda.multiply(this.paillierN)).mod(nSquare);
+        
+        // Função L(x) = (x - 1) / n
+        BigInteger muToL = muToLambda.subtract(BigInteger.ONE).divide(this.paillierN);
+        
+        // mu = (L(g^lambda mod n^2))^-1 mod n
+        this.paillierMu = muToL.modInverse(this.paillierN);
     }
 
     // Getters
@@ -117,6 +133,7 @@ public class KeyManager {
     public PublicKey getEcdsaPublicKey() { return ecdsaPublicKey; }
     public BigInteger getPaillierN() { return paillierN; }
     public BigInteger getPaillierLambda() { return paillierLambda; }    
+    public BigInteger getPaillierMu() { return paillierMu; }
     public BigInteger getElGamalP() { return elGamalP; }
     public BigInteger getElGamalG() { return elGamalG; }
     public BigInteger getElGamalPriv() { return elGamalPriv; }
