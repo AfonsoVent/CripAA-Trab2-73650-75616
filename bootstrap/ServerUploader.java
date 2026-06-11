@@ -10,7 +10,7 @@ import model.EncryptedRecord;
 
 // Responsable to send records to the SQL-server
 public class ServerUploader {
-    // TODO: Descobrir quais sao as credenciais
+    // TODO: Descobrir quais sao as credenciais // talvez este: jdbc:mysql://localhost:3306/encdb
     // MySQL connection credentials
     private static final String DB_URL = "goodFuckingQuestion";
     private static final String USER = "root";

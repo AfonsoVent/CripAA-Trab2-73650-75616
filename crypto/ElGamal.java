@@ -30,30 +30,34 @@ public class ElGamal {
 
     // Fórmula: (c1 * c1') mod p 
     //          (c2 * c2') mod p
-    public static ElGamalCiphertext multiply(ElGamalCiphertext ctx1, ElGamalCiphertext ctx2, BigInteger p) {
+    public static ElGamalCiphertext multiply(ElGamalCiphertext ct1, ElGamalCiphertext ct2, BigInteger p) {
+        if (ct1 == null || ct2 == null || p == null) {
+            throw new IllegalArgumentException("Arguments to multiply cannot be null");
+        }
+
         // (c1 * c1') mod p
-        BigInteger resC1 = ctx1.c1.multiply(ctx2.c1).mod(p);
+        BigInteger resC1 = ct1.c1.multiply(ct2.c1).mod(p);
         
         // (c2 * c2') mod p
-        BigInteger resC2 = ctx1.c2.multiply(ctx2.c2).mod(p);
+        BigInteger resC2 = ct1.c2.multiply(ct2.c2).mod(p);
         
         return new ElGamalCiphertext(resC1, resC2);
     }
 
     // Formula: m = c2 * (c1^x)^-1 mod p
-    public static BigInteger decrypt(ElGamalCiphertext ctx, BigInteger p, BigInteger x) {
-        if (ctx == null || p == null || x == null) {
+    public static BigInteger decrypt(ElGamalCiphertext ct, BigInteger p, BigInteger x) {
+        if (ct == null || p == null || x == null) {
             throw new IllegalArgumentException("Parameters cannot be null for decryption!");
         }
 
         // s = c1^x mod p
-        BigInteger s = ctx.c1.modPow(x, p);
+        BigInteger s = ct.c1.modPow(x, p);
 
         // s^-1 mod p
         BigInteger sInverse = s.modInverse(p);
 
         // m = c2 * s^-1 mod p
-        BigInteger m = ctx.c2.multiply(sInverse).mod(p);
+        BigInteger m = ct.c2.multiply(sInverse).mod(p);
 
         return m;
     }
