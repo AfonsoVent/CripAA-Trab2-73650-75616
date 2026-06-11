@@ -36,11 +36,11 @@ public class DatasetLoader {
 
                 // Save employee object
                 Employee emp = new Employee();
-                emp.setId(Integer.parseInt(data[0].trim()));
-                emp.setFullName(data[1].trim());
-                emp.setDepartment(data[2].trim());
-                emp.setSalary(Integer.parseInt(data[3].trim()));
-                emp.setbirthDate((data[4].trim()));
+                emp.setId(data[0].trim());
+                emp.setFullName(data[3].trim());
+                emp.setBirthDate(data[4].trim());
+                emp.setDepartment(data[11].trim());
+                emp.setSalary(Integer.parseInt(data[14].trim()));
 
                 employees.add(emp);
             }

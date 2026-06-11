@@ -39,4 +39,22 @@ public class ElGamal {
         
         return new ElGamalCiphertext(resC1, resC2);
     }
+
+    // Formula: m = c2 * (c1^x)^-1 mod p
+    public static BigInteger decrypt(ElGamalCiphertext ctx, BigInteger p, BigInteger x) {
+        if (ctx == null || p == null || x == null) {
+            throw new IllegalArgumentException("Parameters cannot be null for decryption!");
+        }
+
+        // s = c1^x mod p
+        BigInteger s = ctx.c1.modPow(x, p);
+
+        // s^-1 mod p
+        BigInteger sInverse = s.modInverse(p);
+
+        // m = c2 * s^-1 mod p
+        BigInteger m = ctx.c2.multiply(sInverse).mod(p);
+
+        return m;
+    }
 }

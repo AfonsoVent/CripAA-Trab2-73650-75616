@@ -17,6 +17,15 @@ public class Bootstrap {
             // Read the dataset
             List<Employee> rows = DatasetLoader.load("Company-Employee.Database/Dataset-Emp-Database.csv");
             
+            // Check if found it
+            if (rows.isEmpty()) System.err.println("CVS not found");
+
+            // Insert values on the trees
+            for (Employee emp : rows) {
+                km.getMOpeSalaryTree().insert(emp.getSalary());
+                km.getMOpeBirthDateTree().insert(emp.getBirthDateAsNumeric());
+            }
+
             // Create a encrypted record of each employee
             List<EncryptedRecord> records = new ArrayList<>();
             for (Employee emp : rows) {
@@ -31,6 +40,7 @@ public class Bootstrap {
             ServerUploader.upload(records);
     
             // // Debug time
+            // TODO: Debug performance
         } catch (Exception e) {
             System.err.println("Error, something went wrong initialising the bootstrap: " + e);
         }

@@ -85,9 +85,9 @@ public class KeyManager implements Serializable {
     private void generateElGamalKeys() {
         SecureRandom random = new SecureRandom();
 
-        this.elGamalP = BigInteger.probablePrime(512, random);
+        this.elGamalP = BigInteger.probablePrime(2048, random);
         this.elGamalG = new BigInteger("2");
-        this.elGamalPriv = new BigInteger(256, random);
+        this.elGamalPriv = new BigInteger(2047, random);
         this.elGamalPub = elGamalG.modPow(elGamalPriv, elGamalP);
     }
 
@@ -96,8 +96,8 @@ public class KeyManager implements Serializable {
         SecureRandom random = new SecureRandom();
 
         // Generate two large (probable) primes
-        BigInteger p = BigInteger.probablePrime(512, random);
-        BigInteger q = BigInteger.probablePrime(512, random);
+        BigInteger p = BigInteger.probablePrime(1024, random);
+        BigInteger q = BigInteger.probablePrime(1024, random);
 
         // Public key n = p * q
         this.paillierN = p.multiply(q);
@@ -117,10 +117,8 @@ public class KeyManager implements Serializable {
         // But with: g = n + 1 
         // New Formula: (1 + lambda * n) mod n^2
         BigInteger muToLambda = BigInteger.ONE.add(this.paillierLambda.multiply(this.paillierN)).mod(nSquare);
-        
         // Função L(x) = (x - 1) / n
         BigInteger muToL = muToLambda.subtract(BigInteger.ONE).divide(this.paillierN);
-        
         // mu = (L(g^lambda mod n^2))^-1 mod n
         this.paillierMu = muToL.modInverse(this.paillierN);
     }

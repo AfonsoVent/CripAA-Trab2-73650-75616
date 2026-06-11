@@ -27,7 +27,7 @@ public class ServerUploader {
 
         // Insert query
         String insertSQL = "INSERT INTO " + TABLE_NAME + " " +
-                           "(idDet, nameDet, deptDet, salaryOpe, birthDateOpe, " +
+                           "(idDet, fullNameDet, deptDet, salaryOpe, birthDateOpe, " +
                            "salarySum, salaryMulC1, salaryMulC2, secureEncBlock, hmac, signature) " +
                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -94,7 +94,7 @@ public class ServerUploader {
                     "salaryMulC1 TEXT, " +
                     "salaryMulC2 TEXT, " +
                     "secureEncBlock LONGTEXT, " +
-                    "hmac VARCHAR(255), " +
+                    "hmac VARBINARY(32), " +
                     "signature TEXT)";
         try (PreparedStatement pstmt = conn.prepareStatement(createTableSQL)) {
             pstmt.execute();

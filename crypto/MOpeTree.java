@@ -13,7 +13,7 @@ public class MOpeTree implements Serializable {
     public MOpeTree() { this.root = null; }
 
     // Start of recursive insert tree
-    public void insert(int value) {
+    public void insert(long value) {
         if (root == null) {
             // Root: Midpoint of range of a positive Long
             root = new MOpeNode(value, Long.MAX_VALUE / 2);
@@ -24,7 +24,7 @@ public class MOpeTree implements Serializable {
     }
 
     // Put the value, until found a "leaf"
-    private void insertRecursive(MOpeNode current, int value, long currentMetric, long step) {
+    private void insertRecursive(MOpeNode current, long value, long currentMetric, long step) {
         // Ignore duplicates
         if (value == current.plaintext) return;
 
@@ -46,7 +46,7 @@ public class MOpeTree implements Serializable {
     }
 
     // Returns metric OPE for a value
-    public long getMetricFor(int value) {
+    public long getMetricFor(long value) {
         MOpeNode current = root;
 
         while (current != null) {
@@ -61,6 +61,6 @@ public class MOpeTree implements Serializable {
             }
         }
 
-        throw new IllegalArgumentException("Searched completed, value not founded in tree.");
+        throw new IllegalArgumentException("Searched completed, value: " + value + " not founded in tree.");
     }
 }

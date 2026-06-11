@@ -39,4 +39,23 @@ public class Paillier {
         // c_sum = (c1 * c2) mod nSquare 
         return c1.multiply(c2).mod(nSquare);
     }
+
+    // Formula: m = L(c^lambda mod n^2) * mu mod n
+    public static BigInteger decrypt(BigInteger c, BigInteger n, BigInteger lambda, BigInteger mu) {
+        if (c == null || n == null || lambda == null || mu == null) {
+            throw new IllegalArgumentException("Parameters cannot be null for Paillier decryption!");
+        }
+
+        // Compute n^2
+        BigInteger nSquare = n.multiply(n);
+
+        // c^lambda mod n^2
+        BigInteger cToLambda = c.modPow(lambda, nSquare);
+
+        // L(x) = (x - 1) / n
+        BigInteger u = cToLambda.subtract(BigInteger.ONE).divide(n);
+
+        // m = L(c^lambda mod n^2) * mu mod n
+        return u.multiply(mu).mod(n);
+    }
 }

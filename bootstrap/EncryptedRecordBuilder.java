@@ -23,7 +23,7 @@ public class EncryptedRecordBuilder {
 
         // For Determinist encryption:
         // DET(EmployeeId)
-        byte[] idBytes = String.valueOf(emp.getId()).getBytes();
+        byte[] idBytes = emp.getId().getBytes();
         byte[] encId = DetCipher.encrypt(idBytes, km.getDetKey(), "employeeID");
         record.setIdDet(Base64.getEncoder().encodeToString(encId));
         // DET(FullName)
@@ -34,7 +34,8 @@ public class EncryptedRecordBuilder {
         byte[] deptBytes = emp.getDepartment().getBytes();
         byte[] encDept = DetCipher.encrypt(deptBytes, km.getDetKey(), "DepartmentID");
         record.setDeptDet(Base64.getEncoder().encodeToString(encDept));
-        
+        // DET(BonusEligibiity)
+
         // For mOPE:
         // mOPE(Salary)
         record.setSalaryOpe(km.getMOpeSalaryTree().getMetricFor(emp.getSalary()));
