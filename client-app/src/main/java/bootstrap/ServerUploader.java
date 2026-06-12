@@ -6,18 +6,15 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import model.DatabaseSchema;
 import model.EncryptedRecord;
 
 // Responsable to send records to the SQL-server
 public class ServerUploader {
-    // TODO: Descobrir quais sao as credenciais // talvez este: jdbc:mysql://localhost:3306/encdb
     // MySQL connection credentials
-    private static final String DB_URL = "goodFuckingQuestion";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/encdb?useSSL=false&allowPublicKeyRetrieval=true";
     private static final String USER = "root";
-    private static final String PASS = "your_password";
-
-    // Target table
-    private static final String TABLE_NAME = "encryptedEmployees";
+    private static final String PASS = "pwdOSEOMDM324MCNMSKHCJCLCMDJ";
 
     public static void upload(List<EncryptedRecord> records) {
         if (records == null || records.isEmpty()) {
@@ -26,10 +23,7 @@ public class ServerUploader {
         }
 
         // Insert query
-        String insertSQL = "INSERT INTO " + TABLE_NAME + " " +
-                           "(idDet, fullNameDet, deptDet, bonusDet, salaryOpe, birthDateOpe, " +
-                           "salarySum, salaryMulC1, salaryMulC2, secureEncBlock, hmac, signature) " +
-                           "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertSQL = DatabaseSchema.INSERT_SQL;
 
         try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
             PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
@@ -67,7 +61,6 @@ public class ServerUploader {
                 // Add to batch
                 pstmt.addBatch();
             }
-
             // Execute batch
             int[] results = pstmt.executeBatch();
 
@@ -83,21 +76,8 @@ public class ServerUploader {
 
     // Creates a table if only doesn't exists
     private static void createTableIfNotExists(Connection conn) throws SQLException {
-        String createTableSQL =
-                "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
-                    "id INT AUTO_INCREMENT PRIMARY KEY, " +
-                    "idDet VARCHAR(255), " +
-                    "fullNameDet VARCHAR(255), " +
-                    "deptDet VARCHAR(255), " +
-                    "bonusDet VARCHAR(255), " +
-                    "salaryOpe BIGINT, " +
-                    "birthDateOpe BIGINT, " +
-                    "salarySum TEXT, " +
-                    "salaryMulC1 TEXT, " +
-                    "salaryMulC2 TEXT, " +
-                    "secureEncBlock LONGTEXT, " +
-                    "hmac VARBINARY(32), " +
-                    "signature TEXT)";
+        String createTableSQL = DatabaseSchema.CREATE_TABLE_SQL;
+
         try (PreparedStatement pstmt = conn.prepareStatement(createTableSQL)) {
             pstmt.execute();
         }

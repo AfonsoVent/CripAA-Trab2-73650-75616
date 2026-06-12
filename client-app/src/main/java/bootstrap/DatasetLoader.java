@@ -39,9 +39,9 @@ public class DatasetLoader {
                 emp.setId(data[0].trim());
                 emp.setFullName(data[3].trim());
                 emp.setBirthDate(data[4].trim());
-                emp.setDepartment(data[11].trim());
-                emp.setSalary(Integer.parseInt(data[14].trim()));
-                emp.setBonusEligible(data[16].trim().equalsIgnoreCase("Yes"));
+                emp.setDepartment(data[10].trim());
+                emp.setSalary(Integer.parseInt(data[13].trim()));
+                emp.setBonusEligible(data[14].trim().equalsIgnoreCase("Yes"));
                 
                 employees.add(emp);
             }

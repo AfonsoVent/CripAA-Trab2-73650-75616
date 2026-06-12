@@ -16,6 +16,9 @@ import javax.crypto.SecretKey;
 public class KeyManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    // Rate of EUR to USD
+    private ExchangeRate eurUsdRate;
+
     // Symmetrical Keys
     private SecretKey detKey;   // AES-CTR
     private SecretKey gcmKey;   // AES/GCM
@@ -42,6 +45,9 @@ public class KeyManager implements Serializable {
 
     public KeyManager() {
         try {
+            // Rate
+            this.eurUsdRate = new ExchangeRate(1.08);
+
             // Create mOPE trees
             this.mOpeSalaryTree = new MOpeTree();
             this.mOpeBirthDateTree = new MOpeTree();
@@ -124,6 +130,7 @@ public class KeyManager implements Serializable {
     }
 
     // Getters
+    public ExchangeRate getEurUsdRate() { return eurUsdRate; }
     public SecretKey getDetKey() { return detKey; }
     public SecretKey getGcmKey() { return gcmKey; }
     public SecretKey getHmacKey() { return hmacKey; }
