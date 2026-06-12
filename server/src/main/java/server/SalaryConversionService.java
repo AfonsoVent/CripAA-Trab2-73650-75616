@@ -12,10 +12,7 @@ public class SalaryConversionService {
     public static ElGamalCiphertext convertEurToUsdEncrypted(
             EncryptedRecord record,
             BigInteger rateNumerator,
-            BigInteger elGamalP,
-            BigInteger p, 
-            BigInteger g, 
-            BigInteger y) {
+            BigInteger elGamalP) {
 
         // Rebuild ElGamal ciphertext
         ElGamalCiphertext salaryCt = new ElGamalCiphertext(
@@ -23,10 +20,7 @@ public class SalaryConversionService {
             record.getSalaryMulC2()
         );
 
-        // Encrypt rate with a new random k
-        ElGamalCiphertext rateCt = ElGamal.encrypt(rateNumerator, p, g, y);
-
         // Multiply by exchange rate
-        return ElGamal.multiply(salaryCt, rateCt, p);
+        return ElGamal.multiplyByScalar(salaryCt, rateNumerator, elGamalP);
     }
 }

@@ -44,6 +44,11 @@ public class ElGamal {
         return new ElGamalCiphertext(resC1, resC2);
     }
 
+    // Multiplies ciphertext by a scalar value
+    public static ElGamalCiphertext multiplyByScalar(ElGamalCiphertext ct, BigInteger scalar, BigInteger p) {
+        return new ElGamalCiphertext(ct.c1, ct.c2.multiply(scalar).mod(p));
+    }
+
     // Formula: m = c2 * (c1^x)^-1 mod p
     public static BigInteger decrypt(ElGamalCiphertext ct, BigInteger p, BigInteger x) {
         if (ct == null || p == null || x == null) {

@@ -20,7 +20,7 @@ public class EncryptedEmployeeRepository {
         String sql = DatabaseSchema.INSERT_SQL;
 
         try (Connection conn = DriverManager.getConnection(
-            DatabaseConfig.URL, DatabaseConfig.USER, DatabaseConfig.PASS);
+            Config.DB_URL, Config.DB_USER, Config.DB_PASS);
             PreparedStatement ps = conn.prepareStatement(sql)) {
             
             // Create table if needed
@@ -72,7 +72,7 @@ public class EncryptedEmployeeRepository {
     public Optional<EncryptedRecord> findByIdDet(String idDet) throws SQLException {
         String sql = "SELECT * FROM " + DatabaseSchema.TABLE_NAME + " WHERE idDet = ? LIMIT 1";
         try (Connection conn = DriverManager.getConnection(
-            DatabaseConfig.URL, DatabaseConfig.USER, DatabaseConfig.PASS);
+            Config.DB_URL, Config.DB_USER, Config.DB_PASS);
             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, idDet);
@@ -86,7 +86,7 @@ public class EncryptedEmployeeRepository {
     // "Search and retrieve registered information by Employee Full Name"
     public Optional<EncryptedRecord> findByFullNameDet(String fullNameDet) throws SQLException {
         String sql = "SELECT * FROM " + DatabaseSchema.TABLE_NAME + " WHERE fullNameDet = ? LIMIT 1";
-        try (Connection conn = DriverManager.getConnection(DatabaseConfig.URL, DatabaseConfig.USER, DatabaseConfig.PASS);
+        try (Connection conn = DriverManager.getConnection(Config.DB_URL, Config.DB_USER, Config.DB_PASS);
             PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setString(1, fullNameDet);
@@ -101,7 +101,7 @@ public class EncryptedEmployeeRepository {
     public List<EncryptedRecord> findByDeptDet(String deptDet) throws SQLException {
         String sql = "SELECT * FROM " + DatabaseSchema.TABLE_NAME + " WHERE deptDet = ?";
         List<EncryptedRecord> list = new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection(DatabaseConfig.URL, DatabaseConfig.USER, DatabaseConfig.PASS);
+        try (Connection conn = DriverManager.getConnection(Config.DB_URL, Config.DB_USER, Config.DB_PASS);
             PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setString(1, deptDet);
@@ -120,7 +120,7 @@ public class EncryptedEmployeeRepository {
         String sql = "SELECT * FROM " + DatabaseSchema.TABLE_NAME + 
                      " ORDER BY salaryOpe " + (ascending ? "ASC" : "DESC");
         List<EncryptedRecord> list = new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection(DatabaseConfig.URL, DatabaseConfig.USER, DatabaseConfig.PASS);
+        try (Connection conn = DriverManager.getConnection(Config.DB_URL, Config.DB_USER, Config.DB_PASS);
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -134,7 +134,7 @@ public class EncryptedEmployeeRepository {
     // "Search and retrieve the Employee with the highest salary"
     public Optional<EncryptedRecord> findHighestSalaryOpe() throws SQLException {
         String sql = "SELECT * FROM " + DatabaseSchema.TABLE_NAME + " ORDER BY salaryOpe DESC LIMIT 1";
-        try (Connection conn = DriverManager.getConnection(DatabaseConfig.URL, DatabaseConfig.USER, DatabaseConfig.PASS);
+        try (Connection conn = DriverManager.getConnection(Config.DB_URL, Config.DB_USER, Config.DB_PASS);
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             return rs.next() ? Optional.of(mapRow(rs)) : Optional.empty();
@@ -159,7 +159,7 @@ public class EncryptedEmployeeRepository {
     public List<EncryptedRecord> orderByAgeOpe(boolean ascending) throws SQLException {
         String sql = "SELECT * FROM " + DatabaseSchema.TABLE_NAME + " ORDER BY birthDateOpe " + (ascending ? "DESC" : "ASC");
         List<EncryptedRecord> list = new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection(DatabaseConfig.URL, DatabaseConfig.USER, DatabaseConfig.PASS);
+        try (Connection conn = DriverManager.getConnection(Config.DB_URL, Config.DB_USER, Config.DB_PASS);
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -173,7 +173,7 @@ public class EncryptedEmployeeRepository {
     // "Find the oldest employee and retrieve all registered information for that employee"
     public Optional<EncryptedRecord> findOldestEmployeeOpe() throws SQLException {
         String sql = "SELECT * FROM " + DatabaseSchema.TABLE_NAME + " ORDER BY birthDateOpe ASC LIMIT 1";
-        try (Connection conn = DriverManager.getConnection(DatabaseConfig.URL, DatabaseConfig.USER, DatabaseConfig.PASS);
+        try (Connection conn = DriverManager.getConnection(Config.DB_URL, Config.DB_USER, Config.DB_PASS);
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             return rs.next() ? Optional.of(mapRow(rs)) : Optional.empty();
@@ -182,33 +182,34 @@ public class EncryptedEmployeeRepository {
 
     // Convert encrypted salaries EUR to USD
     // "Obtain the salary of a given list of employees converted to US Dollars (using an llustrative Euro–US Dollar exchange rate)"
-    public Map<String, BigInteger[]> convertSalariesToUsdElGamal(List<String> idsDet, BigInteger rateC1, BigInteger rateC2, BigInteger elGamalP) throws SQLException {
+    public Map<String, BigInteger[]> convertSalariesToUsdElGamal(List<String> idsDet, BigInteger rateNumerator, BigInteger elGamalP) throws SQLException {
         Map<String, BigInteger[]> results = new HashMap<>();
         if (idsDet == null || idsDet.isEmpty()) return results;
-
+    
         StringJoiner placeholders = new StringJoiner(",", "(", ")");
         for (int i = 0; i < idsDet.size(); i++) placeholders.add("?");
-
+    
         String sql = "SELECT idDet, salaryMulC1, salaryMulC2 FROM " + DatabaseSchema.TABLE_NAME + " WHERE idDet IN " + placeholders.toString();
-
-        try (Connection conn = DriverManager.getConnection(DatabaseConfig.URL, DatabaseConfig.USER, DatabaseConfig.PASS);
+    
+        try (Connection conn = DriverManager.getConnection(Config.DB_URL, Config.DB_USER, Config.DB_PASS);
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             for (int i = 0; i < idsDet.size(); i++) {
                 ps.setString(i + 1, idsDet.get(i));
             }
-
+    
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     String id = rs.getString("idDet");
                     String sC1 = rs.getString("salaryMulC1");
                     String sC2 = rs.getString("salaryMulC2");
-
+    
                     if (sC1 != null && sC2 != null) {
                         BigInteger c1 = new BigInteger(sC1);
-                        BigInteger c2 = new BigInteger(sC2);
-                        BigInteger newC1 = c1.multiply(rateC1).mod(elGamalP);
-                        BigInteger newC2 = c2.multiply(rateC2).mod(elGamalP);
+                        BigInteger c2 = new BigInteger(sC2);                        
+                        BigInteger newC1 = c1; 
+                        BigInteger newC2 = c2.multiply(rateNumerator).mod(elGamalP);
+                        
                         results.put(id, new BigInteger[]{newC1, newC2});
                     }
                 }
@@ -223,7 +224,7 @@ public class EncryptedEmployeeRepository {
         String sql = "SELECT salarySum FROM " + DatabaseSchema.TABLE_NAME + " WHERE deptDet = ?";
         BigInteger encryptedSum = BigInteger.ONE;
         
-        try (Connection conn = DriverManager.getConnection(DatabaseConfig.URL, DatabaseConfig.USER, DatabaseConfig.PASS);
+        try (Connection conn = DriverManager.getConnection(Config.DB_URL, Config.DB_USER, Config.DB_PASS);
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setString(1, deptDet);
@@ -246,7 +247,7 @@ public class EncryptedEmployeeRepository {
         Map<String, BigInteger> bonusMap = new HashMap<>();
         BigInteger scalar = BigInteger.valueOf(scalarModifier); // k = 25
 
-        try (Connection conn = DriverManager.getConnection(DatabaseConfig.URL, DatabaseConfig.USER, DatabaseConfig.PASS);
+        try (Connection conn = DriverManager.getConnection(Config.DB_URL, Config.DB_USER, Config.DB_PASS);
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setString(1, bonusDetEligible);

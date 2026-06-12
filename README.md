@@ -17,3 +17,18 @@ EXIT;
 For some reason if u want to rejoin:
 mysql -u root -p
 pwdOSEOMDM324MCNMSKHCJCLCMDJ
+
+
+
+
+
+keytool -genkeypair \
+  -alias serversigned \
+  -keyalg RSA \
+  -keysize 2048 \
+  -validity 365 \
+  -keystore serverstore.p12 \
+  -storetype PKCS12 \
+  -storepass UPSTGQEDQAPVCASMLAppidmfP1331928 \
+  -keypass UPSTGQEDQAPVCASMLAppidmfP1331928 \
+  -dname "CN=localhost, OU=LEI, O=Universidade, L=Lisboa, C=PT"
