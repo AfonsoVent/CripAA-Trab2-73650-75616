@@ -19,8 +19,8 @@ mysql -u root -p
 pwdOSEOMDM324MCNMSKHCJCLCMDJ
 
 
-
-
+funfante:
+mvn exec:java@server
 
 keytool -genkeypair \
   -alias serversigned \
