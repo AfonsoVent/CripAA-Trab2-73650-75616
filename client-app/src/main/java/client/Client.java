@@ -2,64 +2,81 @@ package client;
 
 import java.util.Scanner;
 
-import client.operations.SomeOpExample;
-import crypto.KeyManager;
+import client.operations.ClientContext;
+import client.operations.ClientOperation;
+import client.operations.OpCalculateBonus;
+import client.operations.OpCompareSalaries;
+import client.operations.OpConvertUsd;
+import client.operations.OpFindByDepartment;
+import client.operations.OpFindByFullName;
+import client.operations.OpFindById;
+import client.operations.OpHighestSalary;
+import client.operations.OpOldestEmployee;
+import client.operations.OpOrderByAge;
+import client.operations.OpOrderBySalary;
+import client.operations.OpPayrollSum;
 
-// It's the main to sent ops to DB server
+// Menu principal — pede operações ao servidor HTTPS e desencripta no cliente
 public class Client {
+
+    private static final ClientOperation[] OPERATIONS = {
+        new OpFindById(),
+        new OpFindByFullName(),
+        new OpOrderBySalary(),
+        new OpFindByDepartment(),
+        new OpHighestSalary(),
+        new OpCompareSalaries(),
+        new OpOrderByAge(),
+        new OpConvertUsd(),
+        new OpPayrollSum(),
+        new OpOldestEmployee(),
+        new OpCalculateBonus()
+    };
+
     public static void main(String[] args) {
-        // KeyManager km;
-        // try {
-        //     km = KeyManager.load("keys.dat");
-        // } catch (Exception e) {
-        //     System.err.println("It wasn't possible to load the keys");
-        //     return;
-        // }
+        try {
+            ClientContext ctx = ClientContext.load();
+            System.out.println("Index loaded. HTTPS connection ready");
 
-        // TODO: something like this
-        // ServerConnector server = new ServerConnector("localhost", <portNumber>);
+            // Verificar servidor
+            System.out.println("Health: " + ctx.server().get("/health"));
 
-        // if (!server.connect()) {
-        //     System.err.println("It wasn't possible to connect");
-        //     return;
-        // }
+            Scanner scanner = new Scanner(System.in);
+            boolean running = true;
 
-        // Scanner scanner = new Scanner(System.in);
-        // boolean running = true;
+            while (running) {
+                System.out.println("\n=== PA2 Client — Encrypted operations ===");
+                for (ClientOperation op : OPERATIONS) {
+                    System.out.println(op.label());
+                }
+                System.out.println("0. Exit");
+                System.out.print("> ");
 
-        // // TODO: Prototipo:
-        // while (running) {
-        //     System.out.println("\n1. Add Employee");
-        //     System.out.println("2. Search Bonus");
-        //     System.out.println("3. Convert Salary");
-        //     System.out.println("0. Exit");
-        //     System.out.print("> ");
+                String choice = scanner.nextLine().trim();
+                if ("0".equals(choice)) {
+                    running = false;
+                    continue;
+                }
 
-        //     String choice = scanner.nextLine().trim();
+                try {
+                    int index = Integer.parseInt(choice) - 1;
+                    if (index < 0 || index >= OPERATIONS.length) {
+                        System.out.println("Invalid option");
+                        continue;
+                    }
+                    OPERATIONS[index].execute(scanner, ctx);
+                } catch (NumberFormatException e) {
+                    System.out.println("Please enter a number");
+                } catch (Exception e) {
+                    System.err.println("Operation error: " + e.getMessage());
+                }
+            }
 
-        //     switch (choice) {
-        //         case "1":
-        //             SomeOpExample.execute(scanner, km, server);
-        //             System.out.println("Operation 1");
-        //             break;
-        //         case "2":
-        //             // SearchBonusOp.execute(scanner, km, server);
-        //             System.out.println("Operation 2");
-        //             break;
-        //         case "3":
-        //             System.out.println("Operation 3");
-        //             break;
-        //         case "0":
-        //             running = false;
-        //             break;
-        //         default:
-        //             System.out.println("The options should be: [...]");
-        //     }
-        // }
-
-        // // Close
-        // server.disconnect();
-        // scanner.close();
-        // System.out.println("Client safely ended");
+            scanner.close();
+            System.out.println("Client shut down");
+        } catch (Exception e) {
+            System.err.println("Failed to start client: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
